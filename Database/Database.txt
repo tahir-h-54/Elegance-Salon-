@@ -1,0 +1,158 @@
+TABLE 1 — roles
+CREATE TABLE roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    permissions JSON
+);
+
+TABLE 2 — users
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role_id INT,
+    status ENUM('active','inactive') DEFAULT 'active',
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+TABLE 3 — clients
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(150),
+    address TEXT,
+    preferences TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+TABLE 4 — services
+CREATE TABLE services (
+    service_id INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(100),
+    description TEXT,
+    duration INT,
+    price DECIMAL(10,2)
+);
+
+TABLE 5 — staff
+CREATE TABLE staff (
+    staff_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNIQUE,
+    name VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(150),
+    role VARCHAR(50),
+    commission_rate DECIMAL(5,2),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+TABLE 6 — appointments
+CREATE TABLE appointments (
+    appointment_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    service_id INT,
+    stylist_id INT,
+    appointment_date DATE,
+    appointment_time TIME,
+    status ENUM('booked','completed','cancelled') DEFAULT 'booked',
+    remarks TEXT,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (service_id) REFERENCES services(service_id),
+    FOREIGN KEY (stylist_id) REFERENCES staff(staff_id)
+);
+
+TABLE 7 — appointment_notifications
+CREATE TABLE appointment_notifications (
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    appointment_id INT,
+    type ENUM('email','sms'),
+    status ENUM('pending','sent') DEFAULT 'pending',
+    FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
+);
+
+TABLE 8 — staff_schedule
+CREATE TABLE staff_schedule (
+    schedule_id INT AUTO_INCREMENT PRIMARY KEY,
+    staff_id INT,
+    date DATE,
+    start_time TIME,
+    end_time TIME,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+);
+
+TABLE 9 — suppliers
+CREATE TABLE suppliers (
+    supplier_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(150),
+    address TEXT
+);
+
+TABLE 10 — inventory
+CREATE TABLE inventory (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(100),
+    category VARCHAR(100),
+    quantity INT,
+    reorder_level INT,
+    cost_price DECIMAL(10,2),
+    supplier_id INT,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+);
+
+TABLE 11 — purchase_orders
+CREATE TABLE purchase_orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_id INT,
+    item_id INT,
+    quantity INT,
+    status ENUM('pending','ordered','received') DEFAULT 'pending',
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id),
+    FOREIGN KEY (item_id) REFERENCES inventory(item_id)
+);
+
+TABLE 12 — invoices
+CREATE TABLE invoices (
+    invoice_id INT AUTO_INCREMENT PRIMARY KEY,
+    appointment_id INT,
+    total_amount DECIMAL(10,2),
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
+);
+
+TABLE 13 — payments
+CREATE TABLE payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    appointment_id INT,
+    amount DECIMAL(10,2),
+    payment_method VARCHAR(50),
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
+);
+
+TABLE 14 — feedback
+CREATE TABLE feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150),
+    message TEXT,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+TABLE 15 — reports_cache
+CREATE TABLE reports_cache (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(100),
+    data JSON,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+TABLE 16 — settings
+CREATE TABLE settings (
+    setting_id INT AUTO_INCREMENT PRIMARY KEY,
+    `key` VARCHAR(100),
+    `value` TEXT
+);

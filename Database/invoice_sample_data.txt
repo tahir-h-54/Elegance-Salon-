@@ -1,0 +1,55 @@
+-- =====================================================================
+-- SAMPLE INVOICE DATA FOR ELEGANCE SALON
+-- =====================================================================
+-- HOW TO USE:
+-- 1. Ensure the `invoices` table exists (see Database/Database.txt).
+-- 2. Ensure you have run Database/sample_data.txt first to populate
+--    appointments, clients, and services.
+-- 3. Run these INSERT statements in phpMyAdmin (SQL tab) on database
+--    `elegance-salon`.
+-- 4. After this, the Invoice List page in Admin Panel will show
+--    realistic invoice records linked to appointments.
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- INVOICES
+-- ---------------------------------------------------------------------
+-- Generate invoices for completed appointments
+-- Note: Adjust appointment_id values if your auto-increment IDs differ.
+-- These invoices correspond to completed appointments from sample_data.txt
+
+INSERT INTO invoices (appointment_id, total_amount, generated_at) VALUES
+-- Invoice for appointment_id 1 (Sophia Martinez - Balayage & Color Blend)
+(1, 180.00, DATE_SUB(CURDATE(), INTERVAL 20 DAY)),
+
+-- Invoice for appointment_id 2 (Amelia Johnson - HydraGlow Facial)
+(2, 95.00, DATE_SUB(CURDATE(), INTERVAL 10 DAY)),
+
+-- Invoice for appointment_id 3 (Isabella Rossi - Spa Manicure & Pedicure)
+(3, 70.00, DATE_SUB(CURDATE(), INTERVAL 7 DAY)),
+
+-- Invoice for appointment_id 4 (Ethan Walker - Men's Grooming Package)
+(4, 55.00, DATE_SUB(CURDATE(), INTERVAL 5 DAY)),
+
+-- Additional invoices for variety (assuming more completed appointments exist)
+-- These can be adjusted based on your actual appointment data
+(5, 220.00, DATE_SUB(CURDATE(), INTERVAL 15 DAY)),
+(6, 80.00, DATE_SUB(CURDATE(), INTERVAL 12 DAY)),
+(7, 120.00, DATE_SUB(CURDATE(), INTERVAL 8 DAY)),
+(8, 45.00, DATE_SUB(CURDATE(), INTERVAL 3 DAY));
+
+-- =====================================================================
+-- END OF INVOICE SAMPLE DATA
+-- =====================================================================
+-- 
+-- NOTE: The total_amount values match the service prices from
+-- sample_data.txt. If your service prices differ, adjust accordingly.
+-- 
+-- To verify invoices are linked correctly:
+-- SELECT i.*, a.appointment_date, c.name as client_name, s.service_name
+-- FROM invoices i
+-- JOIN appointments a ON i.appointment_id = a.appointment_id
+-- JOIN clients c ON a.client_id = c.client_id
+-- JOIN services s ON a.service_id = s.service_id
+-- ORDER BY i.generated_at DESC;
+

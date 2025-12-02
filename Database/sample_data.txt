@@ -1,0 +1,287 @@
+-- =====================================================================
+-- ELEGANCE SALON - SAMPLE DATA
+-- =====================================================================
+-- This file contains SAMPLE INSERT statements to make the site look
+-- like it already has real clients, staff, services, bookings, etc.
+--
+-- HOW TO USE:
+-- 1. Make sure you have already created all tables using:
+--      - Database/Database.txt
+--      - Database/database_extensions.txt
+-- 2. Open phpMyAdmin (or MySQL client) and select database: elegance-salon
+-- 3. Copy/paste and run this file in the SQL tab (you can do it in parts)
+-- 4. Refresh the website pages:
+--      - services, service-detail, book-appointment
+--      - shop, product-detail
+--      - blog, blog-detail
+--      - gallery
+--      - customer-dashboard (after you create a real login)
+--
+-- NOTE:
+-- - All data here is fake but looks realistic.
+-- - IDs are assumed to be AUTO_INCREMENT; adjust values if your DB
+--   already has existing rows.
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 1) ROLES
+-- ---------------------------------------------------------------------
+INSERT INTO roles (role_name, permissions) VALUES
+('Admin',        JSON_OBJECT('can_manage_all', TRUE)),
+('Receptionist', JSON_OBJECT('can_manage_appointments', TRUE)),
+('Senior Stylist', JSON_OBJECT('can_view_own_schedule', TRUE)),
+('Therapist',    JSON_OBJECT('can_view_own_schedule', TRUE)),
+('Inventory Manager', JSON_OBJECT('can_manage_inventory', TRUE)),
+('Content Manager',   JSON_OBJECT('can_manage_blog', TRUE))
+ON DUPLICATE KEY UPDATE role_name = VALUES(role_name);
+
+-- ---------------------------------------------------------------------
+-- 2) SERVICES
+-- ---------------------------------------------------------------------
+INSERT INTO services (service_name, description, duration, price) VALUES
+('Signature Haircut',
+ 'Customized haircut with professional consultation, relaxing shampoo and blow‑dry finish.',
+ 45, 45.00),
+('Balayage & Color Blend',
+ 'Sun‑kissed balayage with root melt and gloss for a seamless, low‑maintenance finish.',
+ 150, 180.00),
+('Keratin Smoothing Treatment',
+ 'Frizz‑control smoothing treatment that leaves hair shiny, smooth and manageable for up to 12 weeks.',
+ 180, 220.00),
+('HydraGlow Facial',
+ 'Deep‑cleansing, exfoliating and hydrating facial tailored to your skin type.',
+ 75, 95.00),
+('Spa Manicure & Pedicure',
+ 'Nail shaping, cuticle care, exfoliation, massage and long‑wear polish for hands and feet.',
+ 90, 70.00),
+('Aromatherapy Body Massage',
+ 'Full‑body massage using warm aromatic oils to relieve stress and muscle tension.',
+ 60, 80.00),
+('Bridal Makeup Trial',
+ 'Full bridal makeup trial including consultation, skin prep and lash application.',
+ 90, 120.00),
+('Men''s Grooming Package',
+ 'Classic haircut, beard detailing and hot towel treatment for gentlemen.',
+ 60, 55.00);
+
+-- ---------------------------------------------------------------------
+-- 3) SERVICE IMAGES
+--    (Maps a few services to existing images in images/Services/)
+-- ---------------------------------------------------------------------
+-- Adjust service_id values if your auto-increment IDs are different.
+INSERT INTO service_images (service_id, image_path, is_primary) VALUES
+  (1, 'images/Services/massage.png', 1),
+  (2, 'images/Services/laser-pigmentation-removal.png', 1),
+  (3, 'images/Services/facial-skin-care.png', 1),
+  (4, 'images/Services/facial-skin-care.png', 1),
+  (5, 'images/Services/manicure.png', 1),
+  (6, 'images/Services/massage.png', 1),
+  (7, 'images/Services/lip-augmentation.png', 1),
+  (8, 'images/Services/depilation.png', 1)
+ON DUPLICATE KEY UPDATE image_path = VALUES(image_path);
+
+-- ---------------------------------------------------------------------
+-- 4) CLIENTS (POTENTIAL & EXISTING)
+-- ---------------------------------------------------------------------
+INSERT INTO clients (name, phone, email, address, preferences) VALUES
+('Sophia Martinez', '+1 (555) 201‑4489', 'sophia.martinez@example.com',
+ '12 Bloom Street, Greenview', 'Prefers late afternoon hair appointments, loves balayage.'),
+('Ethan Walker', '+1 (555) 772‑9102', 'ethan.walker@example.com',
+ '27 Kingsway Ave, Rivertown', 'Men''s grooming, beard trim every 3 weeks.'),
+('Amelia Johnson', '+1 (555) 983‑2214', 'amelia.j@example.com',
+ '89 Maple Crescent, Lakeside', 'Facials every month, sensitive skin products only.'),
+('Noah Patel', '+1 (555) 412‑6655', 'noah.patel@example.com',
+ '44 Westfield Road, Midtown', 'Keratin treatment twice a year, prefers Saturday mornings.'),
+('Isabella Rossi', '+1 (555) 640‑1099', 'isabella.rossi@example.com',
+ '3 Garden Lane, Old Town', 'Spa manicure & pedicure before events.'),
+('Liam Anderson', '+1 (555) 302‑7788', 'liam.anderson@example.com',
+ '210 Sunset Blvd, Seaview', 'Relaxing massages after work, prefers quiet room.'),
+('Olivia Brown', '+1 (555) 690‑3344', 'olivia.brown@example.com',
+ '78 Orchard Park, Hillside', 'Bridal package interest, trial makeup and hair.'),
+('Mason Lee', '+1 (555) 229‑4477', 'mason.lee@example.com',
+ '15 Harbor Street, Bayview', 'Walk‑in haircuts, short waiting time preferred.');
+
+-- ---------------------------------------------------------------------
+-- 5) STAFF (TEAM MEMBERS)
+-- ---------------------------------------------------------------------
+INSERT INTO staff (user_id, name, phone, email, role, commission_rate) VALUES
+(NULL, 'Elena Carter',  '+1 (555) 111‑9023', 'elena.carter@elegancesalon.com', 'Senior Stylist', 18.5),
+(NULL, 'Jasmine Nguyen','+1 (555) 222‑7345', 'jasmine.nguyen@elegancesalon.com', 'Color Specialist', 20.0),
+(NULL, 'Aiden Brooks',  '+1 (555) 333‑8174', 'aiden.brooks@elegancesalon.com',  'Therapist', 15.0),
+(NULL, 'Marina Lopez',  '+1 (555) 444‑9832', 'marina.lopez@elegancesalon.com',  'Nail Artist', 16.0),
+(NULL, 'Sophia Green',  '+1 (555) 555‑6244', 'sophia.green@elegancesalon.com',  'Receptionist', 5.0);
+
+-- ---------------------------------------------------------------------
+-- 6) APPOINTMENTS (PAST + UPCOMING)
+-- ---------------------------------------------------------------------
+-- NOTE: Adjust dates so that at least a few rows are in the future.
+INSERT INTO appointments (client_id, service_id, stylist_id, appointment_date, appointment_time, status, remarks) VALUES
+-- Completed past appointments
+(1, 2, 2, DATE_SUB(CURDATE(), INTERVAL 20 DAY), '14:00:00', 'completed', 'Balayage refresh before vacation.'),
+(3, 4, 3, DATE_SUB(CURDATE(), INTERVAL 10 DAY), '11:30:00', 'completed', 'HydraGlow facial, used sensitive line.'),
+(5, 5, 4, DATE_SUB(CURDATE(), INTERVAL 7 DAY),  '16:00:00', 'completed', 'Spa mani‑pedi with neutral polish.'),
+(2, 8, 1, DATE_SUB(CURDATE(), INTERVAL 5 DAY),  '10:00:00', 'completed', 'Men''s grooming package, beard shaping.'),
+-- Upcoming booked appointments
+(4, 3, 2, DATE_ADD(CURDATE(), INTERVAL 3 DAY),  '09:30:00', 'booked', 'Keratin smoothing before business trip.'),
+(6, 6, 3, DATE_ADD(CURDATE(), INTERVAL 5 DAY),  '18:00:00', 'booked', 'Aromatherapy massage after work.'),
+(7, 7, 1, DATE_ADD(CURDATE(), INTERVAL 12 DAY), '13:00:00', 'booked', 'Bridal makeup trial for June wedding.'),
+(8, 1, 1, DATE_ADD(CURDATE(), INTERVAL 1 DAY),  '15:30:00', 'booked', 'Signature haircut, prefers low fade.'),
+-- Cancelled example
+(1, 6, 3, DATE_SUB(CURDATE(), INTERVAL 2 DAY),  '17:00:00', 'cancelled', 'Client unwell, will reschedule.');
+
+-- ---------------------------------------------------------------------
+-- 7) APPOINTMENT NOTIFICATIONS
+-- ---------------------------------------------------------------------
+INSERT INTO appointment_notifications (appointment_id, type, status) VALUES
+(1, 'email',    'sent'),
+(2, 'email',    'sent'),
+(3, 'sms',      'sent'),
+(4, 'whatsapp', 'sent'),
+(5, 'email',    'pending'),
+(6, 'whatsapp', 'pending'),
+(7, 'email',    'pending'),
+(8, 'sms',      'pending');
+
+-- ---------------------------------------------------------------------
+-- 8) MEMBERSHIPS & CLIENT MEMBERSHIPS
+-- ---------------------------------------------------------------------
+INSERT INTO memberships (name, description, price, duration_days, benefits, discount_percentage, status) VALUES
+('Glow Monthly',
+ 'Perfect for regular self‑care lovers with facials and manicures included.',
+ 59.00, 30,
+ '1 HydraGlow facial per month\nPriority booking\nComplimentary brow shaping',
+ 5.00, 'active'),
+('Radiance Quarterly',
+ 'Quarterly package ideal for color and treatment maintenance.',
+ 159.00, 90,
+ '1 balayage refresh or keratin top‑up\n2 spa manicure & pedicure sessions\nFree product samples',
+ 10.00, 'active'),
+('Bridal Journey',
+ 'Premium bridal preparation membership for 6 months before the big day.',
+ 399.00, 180,
+ '2 bridal makeup trials\n3 facials\n2 hair trials\nExclusive bridal discounts',
+ 15.00, 'active');
+
+-- Link a few clients to memberships
+INSERT INTO client_memberships (client_id, membership_id, start_date, end_date, status) VALUES
+(3, 1, DATE_SUB(CURDATE(), INTERVAL 15 DAY), DATE_ADD(CURDATE(), INTERVAL 15 DAY), 'active'),
+(1, 2, DATE_SUB(CURDATE(), INTERVAL 40 DAY), DATE_ADD(CURDATE(), INTERVAL 50 DAY), 'active'),
+(7, 3, DATE_SUB(CURDATE(), INTERVAL 220 DAY), DATE_SUB(CURDATE(), INTERVAL 40 DAY), 'expired');
+
+-- ---------------------------------------------------------------------
+-- 9) GIFT CARDS
+-- ---------------------------------------------------------------------
+  INSERT INTO gift_cards (code, amount, balance, purchased_by, recipient_name, recipient_email, message, status, expiry_date) VALUES
+  ('GC-SPRING25',  25.00, 25.00, 1, 'Emily Rose', 'emily.rose@example.com',
+  'Happy birthday! Enjoy a little pampering on me. – Sophia', 'active', DATE_ADD(CURDATE(), INTERVAL 9 MONTH)),
+  ('GC-BRIDAL150',150.00, 80.00, 7, 'Laura King', 'laura.king@example.com',
+  'For all your bridal beauty appointments. Love, Olivia.', 'active', DATE_ADD(CURDATE(), INTERVAL 5 MONTH));
+
+-- ---------------------------------------------------------------------
+-- 10) PRODUCTS & PRODUCT IMAGES
+-- ---------------------------------------------------------------------
+INSERT INTO products (name, description, category, price, sale_price, stock_quantity, sku, image_path, status) VALUES
+('Silk Repair Shampoo',
+ 'Sulfate‑free shampoo that gently cleanses while restoring softness and shine.',
+ 'Haircare', 24.99, NULL, 32, 'ES-SH-001', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'active'),
+('Silk Repair Conditioner',
+ 'Lightweight conditioner that detangles and smooths without weighing hair down.',
+ 'Haircare', 26.99, 21.99, 18, 'ES-CD-002', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'active'),
+('Argan Finishing Oil',
+ 'Nourishing argan oil serum to tame frizz and add mirror‑like shine.',
+ 'Styling', 32.50, NULL, 10, 'ES-OI-003', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'active'),
+('HydraGlow Face Serum',
+ 'Vitamin‑rich hydrating serum that plumps and brightens dull skin.',
+ 'Skincare', 39.00, 34.00, 6, 'ES-SR-004', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'active'),
+('Spa Hand Cream',
+ 'Rich, non‑greasy cream to deeply moisturize hands and cuticles.',
+ 'Bodycare', 14.99, NULL, 22, 'ES-HC-005', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'active'),
+('Volumizing Dry Shampoo',
+ 'Instant refresh between washes with added volume at the roots.',
+ 'Styling', 19.50, NULL, 0, 'ES-DS-006', 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 'out_of_stock');
+
+INSERT INTO product_images (product_id, image_path, is_primary) VALUES
+(1, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1),
+(2, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1),
+(3, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1),
+(4, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1),
+(5, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1),
+(6, 'images/e3f27f701d467c0ba4656df6a28432e9.jpg', 1);
+
+-- ---------------------------------------------------------------------
+-- 11) GALLERY
+-- ---------------------------------------------------------------------
+INSERT INTO gallery (title, description, image_path, category, is_featured, display_order) VALUES
+('Soft Copper Balayage',
+ 'Dimensional copper balayage with feathered layers for Sophia.',
+ 'images/Services/laser-pigmentation-removal.png', 'Hair', TRUE, 1),
+('HydraGlow Facial Room',
+ 'Our calming facial room prepared for an evening of treatments.',
+ 'images/About/about-img.jpg', 'Skincare', TRUE, 2),
+('Bridal Updo Perfection',
+ 'Elegant low bun with soft curls and fresh flowers for a spring bride.',
+ 'images/About/sophia.png', 'Bridal', TRUE, 3),
+('Spa Manicure Station',
+ 'Cozy manicure corner ready for a full Saturday of bookings.',
+ 'images/Services/manicure.png', 'Nails', FALSE, 4),
+('Relaxation Massage',
+ 'Aromatherapy massage setup with warm lighting and oils.',
+ 'images/Services/massage.png', 'Spa', FALSE, 5);
+
+-- ---------------------------------------------------------------------
+-- 12) BLOG POSTS
+-- ---------------------------------------------------------------------
+INSERT INTO blog_posts (title, slug, excerpt, content, featured_image, author_id, category, tags, status, views, published_at)
+VALUES
+('Top 5 Hair Trends for This Season',
+ 'top-5-hair-trends-this-season',
+ 'From soft layers to curtain bangs, here are the cuts and colors our clients are loving right now.',
+ 'Staying on top of current hair trends doesn''t have to be overwhelming. At Elegance Salon, we''re seeing a big shift towards effortless, lived‑in texture, combined with low‑maintenance color like balayage and face‑framing highlights. In this article we break down five client‑favorite looks and how to style them at home...',
+ 'images/Blogs/top-trending-hair-cuts.jpg',
+ 1, 'Hair', 'hair, trends, balayage', 'published', 124, DATE_SUB(NOW(), INTERVAL 25 DAY)),
+
+('How to Build a Simple At‑Home Skincare Ritual',
+ 'how-to-build-a-simple-at-home-skincare-ritual',
+ 'A step‑by‑step evening routine that keeps your skin glowing between facial appointments.',
+ 'Your daily skincare ritual doesn''t need ten different steps. Focus on a few high‑quality products that cleanse, treat and protect your skin barrier. Our therapists recommend starting with a gentle cleanser, followed by a hydrating serum, eye cream and moisturizer. Once or twice a week, add a professional‑grade exfoliant to keep your complexion smooth and bright...',
+ 'images/Blogs/skincare-rituals.png',
+ 1, 'Skincare', 'skincare, facial, glow', 'published', 88, DATE_SUB(NOW(), INTERVAL 18 DAY)),
+
+('Why Regular Massage Is More Than a Luxury',
+ 'why-regular-massage-is-more-than-a-luxury',
+ 'From posture to stress levels, massages support your health in more ways than one.',
+ 'We often think of spa massages as a once‑a‑year treat, but your body benefits most when touch therapy is part of your regular self‑care. Massage improves circulation, eases muscular tension from desk work, and can even improve sleep quality. Our Aromatherapy Body Massage is designed to calm your nervous system while targeting your most tense areas...',
+ 'images/Blogs/spa-facials.png',
+ 1, 'Wellness', 'massage, wellness, stress', 'published', 64, DATE_SUB(NOW(), INTERVAL 11 DAY)),
+
+('Bridal Beauty Timeline: When to Book What',
+ 'bridal-beauty-timeline-when-to-book-what',
+ 'A complete six‑month bridal beauty checklist so you feel calm and camera‑ready.',
+ 'From engagement photos to the wedding day itself, there are a lot of beauty appointments to plan. We recommend starting facials at least six months ahead, hair trials three months out, and final color and treatments 1–2 weeks before the big day. This guide walks you through each step so nothing gets missed...',
+ 'images/Blogs/hair-coloring-myths.png',
+ 1, 'Bridal', 'bridal, wedding, makeup', 'published', 47, DATE_SUB(NOW(), INTERVAL 5 DAY));
+
+-- ---------------------------------------------------------------------
+-- 13) SERVICE REVIEWS (for service-detail.php)
+-- ---------------------------------------------------------------------
+-- We attach reviews to completed appointments above (ids may differ).
+-- Make sure the appointment_id values refer to completed rows.
+INSERT INTO service_reviews (service_id, client_id, appointment_id, rating, review_text, status) VALUES
+(2, 1, 1, 5,
+ 'Absolutely obsessed with my new balayage! The blend is so soft and grows out beautifully.',
+ 'approved'),
+(4, 3, 2, 5,
+ 'My skin has never felt this clean and hydrated. The therapist explained every step.',
+ 'approved'),
+(5, 5, 3, 4,
+ 'Loved the spa atmosphere and massage chair. Polish lasted over two weeks.',
+ 'approved'),
+(8, 2, 4, 5,
+ 'Best men''s cut I''ve had in years. Quick but very detailed, and the beard line is perfect.',
+ 'approved');
+
+-- =====================================================================
+-- END OF SAMPLE DATA
+-- =====================================================================
+
+

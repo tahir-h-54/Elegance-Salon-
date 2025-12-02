@@ -1,0 +1,246 @@
+-- ============================================
+-- DATABASE EXTENSIONS FOR ELEGANCE SALON
+-- Additional tables required for new features
+-- ============================================
+
+-- TABLE 17 — service_images
+-- Stores images for services
+CREATE TABLE service_images (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    service_id INT,
+    image_path VARCHAR(255),
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (service_id) REFERENCES services(service_id) ON DELETE CASCADE
+);
+
+-- TABLE 18 — discounts
+-- Discount codes and promotional offers
+CREATE TABLE discounts (
+    discount_id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(100),
+    description TEXT,
+    discount_type ENUM('percentage', 'fixed') DEFAULT 'percentage',
+    discount_value DECIMAL(10,2),
+    min_purchase DECIMAL(10,2) DEFAULT 0,
+    max_discount DECIMAL(10,2) DEFAULT NULL,
+    start_date DATE,
+    end_date DATE,
+    usage_limit INT DEFAULT NULL,
+    used_count INT DEFAULT 0,
+    status ENUM('active', 'inactive', 'expired') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 19 — memberships
+-- Membership plans/packages
+CREATE TABLE memberships (
+    membership_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2),
+    duration_days INT,
+    benefits TEXT,
+    discount_percentage DECIMAL(5,2) DEFAULT 0,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 20 — client_memberships
+-- Client membership subscriptions
+CREATE TABLE client_memberships (
+    subscription_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    membership_id INT,
+    start_date DATE,
+    end_date DATE,
+    status ENUM('active', 'expired', 'cancelled') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (membership_id) REFERENCES memberships(membership_id)
+);
+
+-- TABLE 21 — gift_cards
+-- Gift card system
+CREATE TABLE gift_cards (
+    gift_card_id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    amount DECIMAL(10,2),
+    balance DECIMAL(10,2),
+    purchased_by INT,
+    recipient_name VARCHAR(100),
+    recipient_email VARCHAR(150),
+    message TEXT,
+    status ENUM('active', 'used', 'expired') DEFAULT 'active',
+    expiry_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (purchased_by) REFERENCES clients(client_id)
+);
+
+-- TABLE 22 — products
+-- E-commerce products
+CREATE TABLE products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    category VARCHAR(100),
+    price DECIMAL(10,2),
+    sale_price DECIMAL(10,2) DEFAULT NULL,
+    stock_quantity INT DEFAULT 0,
+    sku VARCHAR(50) UNIQUE,
+    image_path VARCHAR(255),
+    status ENUM('active', 'inactive', 'out_of_stock') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 23 — product_images
+-- Multiple images per product
+CREATE TABLE product_images (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    image_path VARCHAR(255),
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+);
+
+-- TABLE 24 — cart
+-- Shopping cart
+CREATE TABLE cart (
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    product_id INT,
+    quantity INT DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- TABLE 25 — orders
+-- Product orders
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    order_number VARCHAR(50) UNIQUE,
+    total_amount DECIMAL(10,2),
+    discount_code VARCHAR(50),
+    discount_amount DECIMAL(10,2) DEFAULT 0,
+    final_amount DECIMAL(10,2),
+    status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    shipping_address TEXT,
+    payment_method VARCHAR(50),
+    payment_status ENUM('pending', 'paid', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
+
+-- TABLE 26 — order_items
+-- Order line items
+CREATE TABLE order_items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    price DECIMAL(10,2),
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- TABLE 27 — service_reviews
+-- Reviews and ratings for services
+CREATE TABLE service_reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    service_id INT,
+    client_id INT,
+    appointment_id INT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (service_id) REFERENCES services(service_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
+);
+
+-- TABLE 28 — gallery
+-- Photo gallery
+CREATE TABLE gallery (
+    gallery_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    description TEXT,
+    image_path VARCHAR(255),
+    category VARCHAR(50),
+    is_featured BOOLEAN DEFAULT FALSE,
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLE 29 — blog_posts
+-- Blog articles
+CREATE TABLE blog_posts (
+    post_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    slug VARCHAR(200) UNIQUE,
+    excerpt TEXT,
+    content TEXT,
+    featured_image VARCHAR(255),
+    author_id INT,
+    category VARCHAR(50),
+    tags VARCHAR(255),
+    status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
+    views INT DEFAULT 0,
+    published_at DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(user_id)
+);
+
+-- TABLE 30 — appointment_notifications (UPDATE)
+-- Add WhatsApp notification type
+ALTER TABLE appointment_notifications 
+MODIFY type ENUM('email','sms','whatsapp') DEFAULT 'email';
+
+-- TABLE 31 — notification_settings
+-- WhatsApp and other notification settings
+CREATE TABLE notification_settings (
+    setting_id INT AUTO_INCREMENT PRIMARY KEY,
+    notification_type ENUM('email', 'sms', 'whatsapp') NOT NULL,
+    whatsapp_api_key VARCHAR(255),
+    whatsapp_api_url VARCHAR(255),
+    whatsapp_phone_number VARCHAR(20),
+    is_enabled BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- TABLE 32 — client_login
+-- Client login credentials (separate from admin users)
+CREATE TABLE client_login (
+    login_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT UNIQUE,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE
+);
+
+-- ============================================
+-- INDEXES FOR PERFORMANCE
+-- ============================================
+CREATE INDEX idx_service_images_service ON service_images(service_id);
+CREATE INDEX idx_discounts_code ON discounts(code);
+CREATE INDEX idx_discounts_status ON discounts(status);
+CREATE INDEX idx_client_memberships_client ON client_memberships(client_id);
+CREATE INDEX idx_gift_cards_code ON gift_cards(code);
+CREATE INDEX idx_products_category ON products(category);
+CREATE INDEX idx_products_status ON products(status);
+CREATE INDEX idx_cart_client ON cart(client_id);
+CREATE INDEX idx_orders_client ON orders(client_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_service_reviews_service ON service_reviews(service_id);
+CREATE INDEX idx_blog_posts_slug ON blog_posts(slug);
+CREATE INDEX idx_blog_posts_status ON blog_posts(status);
+

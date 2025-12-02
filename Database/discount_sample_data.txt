@@ -1,0 +1,68 @@
+-- =====================================================================
+-- SAMPLE DISCOUNT DATA FOR ELEGANCE SALON
+-- =====================================================================
+-- HOW TO USE:
+-- 1. Ensure the `discounts` table exists (see Database/database_extensions.txt).
+-- 2. Run these INSERT statements in phpMyAdmin (SQL tab) on database
+--    `elegance-salon`.
+-- 3. After this, the Discounts admin pages and checkout discount code
+--    feature will have some realistic promo codes to work with.
+-- =====================================================================
+
+INSERT INTO discounts
+  (code, name, description, discount_type, discount_value, min_purchase, max_discount,
+   start_date, end_date, usage_limit, used_count, status)
+VALUES
+('WELCOME15',
+ 'Welcome Offer 15%',
+ '15% off on your first service booking at Elegance Salon.',
+ 'percentage', 15.00, 0.00, 40.00,
+ DATE_SUB(CURDATE(), INTERVAL 5 DAY),
+ DATE_ADD(CURDATE(), INTERVAL 60 DAY),
+ 200, 18, 'active'),
+
+('GLOWUP25',
+ 'Glow Up Package',
+ '25% off HydraGlow Facial or Spa Facial sessions.',
+ 'percentage', 25.00, 60.00, 80.00,
+ DATE_SUB(CURDATE(), INTERVAL 10 DAY),
+ DATE_ADD(CURDATE(), INTERVAL 30 DAY),
+ 100, 9, 'active'),
+
+('MIDWEEK10',
+ 'Midweek Calm',
+ 'Flat $10 off appointments booked for Tuesday–Thursday.',
+ 'fixed', 10.00, 40.00, NULL,
+ DATE_SUB(CURDATE(), INTERVAL 2 DAY),
+ DATE_ADD(CURDATE(), INTERVAL 45 DAY),
+ NULL, 3, 'active'),
+
+('BRIDAL30',
+ 'Bridal Bliss 30%',
+ 'Save 30% on bridal packages when booked at least 30 days in advance.',
+ 'percentage', 30.00, 200.00, 150.00,
+ DATE_SUB(CURDATE(), INTERVAL 20 DAY),
+ DATE_ADD(CURDATE(), INTERVAL 90 DAY),
+ 50, 4, 'active'),
+
+('HAIRLOVE20',
+ 'Hair Love 20%',
+ '20% off all hair color and keratin treatments.',
+ 'percentage', 20.00, 80.00, 120.00,
+ DATE_SUB(CURDATE(), INTERVAL 30 DAY),
+ DATE_ADD(CURDATE(), INTERVAL 15 DAY),
+ 150, 47, 'active'),
+
+('SUMMERENDED',
+ 'Summer Campaign (Expired)',
+ 'Old summer promo for reference/testing of expired logic.',
+ 'percentage', 20.00, 50.00, 90.00,
+ DATE_SUB(CURDATE(), INTERVAL 120 DAY),
+ DATE_SUB(CURDATE(), INTERVAL 30 DAY),
+ 300, 260, 'expired');
+
+-- =====================================================================
+-- END OF DISCOUNT SAMPLE DATA
+-- =====================================================================
+
+

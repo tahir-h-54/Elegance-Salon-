@@ -1,0 +1,60 @@
+-- =====================================================================
+-- SAMPLE PAYMENT DATA FOR ELEGANCE SALON
+-- =====================================================================
+-- HOW TO USE:
+-- 1. Ensure the `payments` table exists (see Database/Database.txt).
+-- 2. Ensure you have run Database/sample_data.txt first to populate
+--    appointments, clients, and services.
+-- 3. Run these INSERT statements in phpMyAdmin (SQL tab) on database
+--    `elegance-salon`.
+-- 4. After this, the Payment Records page in Admin Panel will show
+--    realistic payment transactions linked to appointments.
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- PAYMENTS
+-- ---------------------------------------------------------------------
+-- Generate payments for completed appointments (and some booked ones)
+-- Note: Adjust appointment_id values if your auto-increment IDs differ.
+-- Payment amounts match invoice amounts for completed appointments.
+
+INSERT INTO payments (appointment_id, amount, payment_method, payment_date) VALUES
+-- Payment for appointment_id 1 (Sophia Martinez - Balayage & Color Blend)
+(1, 180.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 20 DAY)),
+
+-- Payment for appointment_id 2 (Amelia Johnson - HydraGlow Facial)
+(2, 95.00, 'Cash', DATE_SUB(CURDATE(), INTERVAL 10 DAY)),
+
+-- Payment for appointment_id 3 (Isabella Rossi - Spa Manicure & Pedicure)
+(3, 70.00, 'Debit Card', DATE_SUB(CURDATE(), INTERVAL 7 DAY)),
+
+-- Payment for appointment_id 4 (Ethan Walker - Men's Grooming Package)
+(4, 55.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 5 DAY)),
+
+-- Additional payments for variety
+(5, 220.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 15 DAY)),
+(6, 80.00, 'Cash', DATE_SUB(CURDATE(), INTERVAL 12 DAY)),
+(7, 120.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 8 DAY)),
+(8, 45.00, 'Debit Card', DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
+
+-- Partial payment example (if applicable)
+(9, 50.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 1 DAY)),
+
+-- Payment for upcoming appointment (advance payment)
+(10, 180.00, 'Credit Card', DATE_SUB(CURDATE(), INTERVAL 2 DAY));
+
+-- =====================================================================
+-- END OF PAYMENT SAMPLE DATA
+-- =====================================================================
+-- 
+-- NOTE: Payment methods include: 'Credit Card', 'Debit Card', 'Cash',
+-- 'PayPal', 'Bank Transfer', etc. Adjust as needed.
+-- 
+-- To verify payments are linked correctly:
+-- SELECT p.*, a.appointment_date, a.status, c.name as client_name, s.service_name
+-- FROM payments p
+-- JOIN appointments a ON p.appointment_id = a.appointment_id
+-- JOIN clients c ON a.client_id = c.client_id
+-- JOIN services s ON a.service_id = s.service_id
+-- ORDER BY p.payment_date DESC;
+
