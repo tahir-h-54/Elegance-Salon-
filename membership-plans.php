@@ -104,7 +104,7 @@ $memberships_result = mysqli_query($conn, $memberships_query);
     <footer class="bg-black text-white py-10 px-6 mt-10">
       <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <img src="../images/elegance-saloon-logo-white.png" alt="Elegance Salon" class="w-44 mb-4">
+          <img src="images/elegance-saloon-logo-white.png" alt="Elegance Salon" class="w-44 mb-4">
           <p class="text-gray-400 text-sm">
             Because you deserve beauty. Premium hair, skin and spa experiences in one elegant space.
           </p>
@@ -134,7 +134,7 @@ $memberships_result = mysqli_query($conn, $memberships_query);
             <li><span class="block">Phone: +1 (555) 123-4567</span></li>
             <li><span class="block">123 Beauty Street, City</span></li>
             <li class="pt-2">
-              <a href="../Admin/AD_login.php" class="inline-flex items-center px-4 py-2 bg-[#CFF752] text-black rounded-full text-xs font-semibold hover:bg-[#b8e042] transition-colors">
+              <a href="Admin/AD_login.php" class="inline-flex items-center px-4 py-2 bg-[#CFF752] text-black rounded-full text-xs font-semibold hover:bg-[#b8e042] transition-colors">
                 Admin Panel Login
               </a>
             </li>

@@ -202,7 +202,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['login'])){
       <input type="checkbox" id="chk" aria-hidden="true">
         <div class="login">
           <form method="post">
-            <label for="chk" aria-hidden="true"><a href="login.php" class="text-black">Login</a></label>
+            <label for="chk" aria-hidden="true"><a href="AD_login.php" class="text-black">Login</a></label>
             <input type="email" name="email" placeholder="Email">
             <input type="password" name="userpassword" placeholder="Password">
             <button type="submit" name="login">Login</button>

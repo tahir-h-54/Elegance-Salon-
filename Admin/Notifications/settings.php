@@ -119,10 +119,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
 
                         <div class="flex gap-4">
-                            <button type="submit" class="px-6 py-2 bg-[#d946ef] text-white rounded-lg hover:bg-purple-700 font-semibold">
+                            <button type="submit" class="px-6 py-2 bg-[#CFF752] text-white rounded-lg hover:bg-[#c8f73c] font-semibold">
                                 Save Settings
                             </button>
-                            <button type="button" onclick="testWhatsApp()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold">
+                            <button type="button" onclick="testWhatsApp()" class="px-6 py-2 bg-none border-[#000] border text-[#000] rounded-lg hover:text-[#fff] hover:bg-[#000] font-semibold">
                                 Test Connection
                             </button>
                         </div>

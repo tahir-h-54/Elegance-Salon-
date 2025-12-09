@@ -190,10 +190,49 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </main>
 
-    <footer class="bg-black text-white py-12 px-8">
-        <div class="max-w-7xl mx-auto text-center">
-            <p class="text-gray-400">&copy; <?php echo date('Y'); ?> Elegance Salon. All rights reserved.</p>
+    <footer class="bg-black text-white py-10 px-6 mt-10">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <img src="images/elegance-saloon-logo-white.png" alt="Elegance Salon" class="w-44 mb-4">
+          <p class="text-gray-400 text-sm">
+            Because you deserve beauty. Premium hair, skin and spa experiences in one elegant space.
+          </p>
         </div>
+        <div>
+          <h4 class="font-semibold mb-3 text-sm tracking-wide">Explore</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="../services.php" class="hover:text-[#CFF752]">Services</a></li>
+            <li><a href="../gallery.php" class="hover:text-[#CFF752]">Gallery</a></li>
+            <li><a href="../shop.php" class="hover:text-[#CFF752]">Shop</a></li>
+            <li><a href="../blog.php" class="hover:text-[#CFF752]">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3 text-sm tracking-wide">For Guests</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="../book-appointment.php" class="hover:text-[#CFF752]">Book Appointment</a></li>
+            <li><a href="../membership-plans.php" class="hover:text-[#CFF752]">Memberships</a></li>
+            <li><a href="../gift-cards.php" class="hover:text-[#CFF752]">Gift Cards</a></li>
+            <li><a href="../customer-dashboard.php" class="hover:text-[#CFF752]">My account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3 text-sm tracking-wide">Admin & Contact</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><span class="block">Email: info@elegancesalon.com</span></li>
+            <li><span class="block">Phone: +1 (555) 123-4567</span></li>
+            <li><span class="block">123 Beauty Street, City</span></li>
+            <li class="pt-2">
+              <a href="Admin/AD_login.php" class="inline-flex items-center px-4 py-2 bg-[#CFF752] text-black rounded-full text-xs font-semibold hover:bg-[#b8e042] transition-colors">
+                Admin Panel Login
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-4 text-center text-xs text-gray-500">
+        &copy; <?php echo date('Y'); ?> Elegance Salon. All rights reserved.
+      </div>
     </footer>
 
     <script>
